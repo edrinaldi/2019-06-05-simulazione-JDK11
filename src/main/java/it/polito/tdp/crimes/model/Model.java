@@ -22,7 +22,6 @@ public class Model {
 	public Model() {
 		// inizializzo il dao
 		this.dao = new EventsDao();
-		
 	}
 	
 	public void creaGrafo(int anno) {

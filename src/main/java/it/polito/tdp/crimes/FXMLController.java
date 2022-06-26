@@ -118,7 +118,7 @@ public class FXMLController {
     	
     	
     	// effettuo la simulazione
-    	int nMalGestiti = this.model.simula(0, 0, 0, 0);
+    	int nMalGestiti = this.model.simula(anno, mese, giorno, N);
     	
     	// stampo il risultato
     	this.txtResult.setText(String.format("Simulo con %d agenti\nCRIMINI MAL GESTITI: %d", N, nMalGestiti));

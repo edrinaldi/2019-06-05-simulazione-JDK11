@@ -57,18 +57,28 @@ public class Simulator {
 		this.nMalGestiti = 0;
 		
 		// inizializzo il modello del mondo
+		this.agenti = new ArrayList<>();
 		if(centrale != null) {
 			// tutti gli agenti originariamente disponibili in centrale
 			for(int i=0; i<this.N; i++) {
 				this.agenti.add(new Agente(i, centrale, true));
 			}
 		}
+		else {
+			System.out.println("Errore: centrale non trovata.");
+		}
 		
 		// inizializzo la coda e la carico con i primi eventi
 		this.queue = new PriorityQueue<>();
 		for(Event e : this.criminiDelGiorno) {
 			Distretto distretto = this.trovaDistretto(e.getDistrict_id());
-			this.queue.add(new SimulationEvent(e.getReported_date(), EventType.CRIMINE, null, distretto, e.getOffense_category_id()));
+			if(distretto != null) {
+				this.queue.add(new SimulationEvent(e.getReported_date(), EventType.CRIMINE, null, distretto, 
+						e.getOffense_category_id()));
+			}
+			else {
+				System.out.println("Errore: distretto non trovato.");
+			}
 		}
 	}
 
@@ -90,9 +100,21 @@ public class Simulator {
 			
 			// trovo l'agente disponibile più vicino
 			Agente agente = this.trovaAgente(e.getDistretto());
+			if(agente == null) {
+				System.out.println("non ci sono agenti disponibili!");
+//				this.queue.add(new SimulationEvent(e.getTime(), EventType.CRIMINE, null, e.getDistretto(), 
+//						e.getCategoria()));
+				break;
+			}
 			
 			// calcolo il tempo d'arrivo
-			double tempoSpostamento = this.calcoloSpostamento(agente.getDistretto(), e.getDistretto());
+			double tempoSpostamento = 0.0;
+			if(!agente.getDistretto().equals(e.getDistretto())) {
+				tempoSpostamento = this.calcoloSpostamento(agente.getDistretto(), e.getDistretto());
+			}
+			else {
+				tempoSpostamento = 0;
+			}
 			
 			// aggiorno i dati in uscita
 			if(tempoSpostamento > 15) {
@@ -100,7 +122,8 @@ public class Simulator {
 			}
 			
 			// creo un evento per la gestione del crimine
-			this.queue.add(new SimulationEvent(e.getTime().plusMinutes((long)tempoSpostamento), EventType.INIZIA_GESTIONE, agente, e.getDistretto(), e.getCategoria()));
+			this.queue.add(new SimulationEvent(e.getTime().plusMinutes((long)tempoSpostamento), 
+					EventType.INIZIA_GESTIONE, agente, e.getDistretto(), e.getCategoria()));
 			
 			break;
 		case INIZIA_GESTIONE:
@@ -113,7 +136,8 @@ public class Simulator {
 			e.getAgente().setDistretto(e.getDistretto());
 			
 			// creo un evento per la fine della gestione
-			this.queue.add(new SimulationEvent(istanteFine, EventType.FINISCE_GESTIONE, e.getAgente(), e.getDistretto(), e.getCategoria()));
+			this.queue.add(new SimulationEvent(istanteFine, EventType.FINISCE_GESTIONE, e.getAgente(), 
+					e.getDistretto(), e.getCategoria()));
 			
 			break;
 		case FINISCE_GESTIONE:
@@ -177,7 +201,8 @@ public class Simulator {
 		double distanzaMin = Integer.MAX_VALUE;
 		for(Agente a : this.agenti) {
 			if(a.isDisponibile()) {
-				double distanza = LatLngTool.distance(a.getDistretto().getCentro(), distretto.getCentro(), LengthUnit.KILOMETER);
+				double distanza = LatLngTool.distance(a.getDistretto().getCentro(), distretto.getCentro(), 
+						LengthUnit.KILOMETER);
 				if(distanza < distanzaMin) {
 					distanzaMin = distanza;
 					piuVicino = a;
@@ -188,7 +213,7 @@ public class Simulator {
 	}
 
 	private double calcoloSpostamento(Distretto partenza, Distretto arrivo) {
-		double distanza = LatLngTool.distance(partenza.getCentro(), arrivo.getCentro(), LengthUnit.KILOMETER);
+		double distanza = this.grafo.getEdgeWeight(this.grafo.getEdge(partenza, arrivo));
 		return distanza/60*60;
 	}
 }

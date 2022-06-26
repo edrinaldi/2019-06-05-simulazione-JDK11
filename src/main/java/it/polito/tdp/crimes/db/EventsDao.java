@@ -120,9 +120,9 @@ public class EventsDao {
 	public List<Event> getEventsByDay(int anno, int mese, int giorno){
 		String sql = "select * "
 				+ "from events "
-				+ "where day(reported_date)=? "
+				+ "where year(reported_date)=? "
 				+ "and month(reported_date)=? "
-				+ "and year(reported_date)=?" ;
+				+ "and day(reported_date)=?" ;
 		try {
 			Connection conn = DBConnect.getConnection() ;
 
