@@ -98,11 +98,13 @@ public class Simulator {
 	public void processEvent(SimulationEvent e) {
 		switch(e.getType()) {
 		case CRIMINE:
+			System.out.println("NUOVO CRIMINE!");
 			
 			// trovo l'agente disponibile più vicino
 			Agente agente = this.trovaAgente(e.getDistretto());
 			if(agente == null) {
-				System.out.println("non ci sono agenti disponibili!");
+//				System.out.println("non ci sono agenti disponibili!");
+				System.out.println("CRIMINE MAL GESTITO!");
 				this.nMalGestiti++;
 				break;
 			}
@@ -112,6 +114,7 @@ public class Simulator {
 			
 			// aggiorno i dati in uscita
 			if(tempoSpostamento > 15) {
+				System.out.println("CRIMINE MAL GESTITO!");
 				this.nMalGestiti++;
 				break;
 			}
@@ -122,6 +125,7 @@ public class Simulator {
 			
 			break;
 		case INIZIA_GESTIONE:
+			System.out.println("ARRIVATO AGENTE SUL POSTO!");
 			
 			// calcolo l'istante in cui l'agente si libera
 			LocalDateTime istanteFine = this.calcolaFineGestione(e.getTime(), e.getCategoria());
@@ -223,6 +227,6 @@ public class Simulator {
 		else {
 			distanza = 0;
 		}
-		return distanza/60*60;	// min
+		return (distanza/60)*60;	// min
 	}
 }
