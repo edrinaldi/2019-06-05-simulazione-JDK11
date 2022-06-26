@@ -74,8 +74,7 @@ public class Simulator {
 		for(Event e : this.criminiDelGiorno) {
 			Distretto distretto = this.trovaDistretto(e.getDistrict_id());
 			if(distretto != null) {
-				this.queue.add(new SimulationEvent(e.getReported_date(), EventType.CRIMINE, null, distretto, 
-						e.getOffense_category_id()));
+				this.queue.add(new SimulationEvent(e.getReported_date(), EventType.CRIMINE, null, e));
 			}
 			else {
 				System.out.println("Errore: distretto non trovato.");
@@ -101,7 +100,7 @@ public class Simulator {
 			System.out.println("NUOVO CRIMINE!");
 			
 			// trovo l'agente disponibile più vicino
-			Agente agente = this.trovaAgente(e.getDistretto());
+			Agente agente = this.trovaAgente(this.trovaDistretto(e.getCrimine().getDistrict_id()));
 			if(agente == null) {
 //				System.out.println("non ci sono agenti disponibili!");
 				System.out.println("CRIMINE MAL GESTITO!");
@@ -112,17 +111,18 @@ public class Simulator {
 			}
 			
 			// calcolo il tempo d'arrivo
-			double tempoSpostamento = this.calcoloSpostamento(agente.getDistretto(), e.getDistretto());
+			double tempoSpostamento = this.calcoloSpostamento(agente.getDistretto(), 
+					this.trovaDistretto(e.getCrimine().getDistrict_id()));
 			
 			// creo un evento per la gestione del crimine
 			this.queue.add(new SimulationEvent(e.getTime().plusMinutes((long)tempoSpostamento), 
-					EventType.INIZIA_GESTIONE, agente, e.getDistretto(), e.getCategoria()));
+					EventType.INIZIA_GESTIONE, agente, e.getCrimine()));
 			
 			break;
 		case INIZIA_GESTIONE:
 			System.out.println("ARRIVATO AGENTE SUL POSTO!");
 			
-			if(e.getTime().isAfter(null)) {
+			if(e.getTime().isAfter(e.getCrimine().getReported_date().plusMinutes(15))) {
 				// aggiorno i dati in uscita
 				System.out.println("CRIMINE MAL GESTITO!");
 				this.nMalGestiti++;
@@ -130,15 +130,16 @@ public class Simulator {
 			}
 			
 			// calcolo l'istante in cui l'agente si libera
-			LocalDateTime istanteFine = this.calcolaFineGestione(e.getTime(), e.getCategoria());
+			LocalDateTime istanteFine = this.calcolaFineGestione(e.getTime(), 
+					e.getCrimine().getOffense_category_id());
 			
 			// aggiorno il modello del mondo (agente impegnato nel distretto)
 			e.getAgente().setDisponibile(false);
-			e.getAgente().setDistretto(e.getDistretto());
+			e.getAgente().setDistretto(this.trovaDistretto(e.getCrimine().getDistrict_id()));
 			
 			// creo un evento per la fine della gestione
 			this.queue.add(new SimulationEvent(istanteFine, EventType.FINISCE_GESTIONE, e.getAgente(), 
-					e.getDistretto(), e.getCategoria()));
+					e.getCrimine()));
 			
 			break;
 		case FINISCE_GESTIONE:

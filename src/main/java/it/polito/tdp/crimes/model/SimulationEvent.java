@@ -12,27 +12,15 @@ public class SimulationEvent implements Comparable<SimulationEvent>{
 	private LocalDateTime time;
 	private EventType type;
 	private Agente agente;
-	private Distretto distretto;
-	private String categoria;
+	private Event crimine;
 	
 	
-	public SimulationEvent(LocalDateTime time, EventType type, Agente agente, Distretto distretto, String categoria) {
+	public SimulationEvent(LocalDateTime time, EventType type, Agente agente, Event crimine) {
 		super();
 		this.time = time;
 		this.type = type;
 		this.agente = agente;
-		this.distretto = distretto;
-		this.categoria = categoria;
-	}
-
-
-	public String getCategoria() {
-		return categoria;
-	}
-
-
-	public void setCategoria(String categoria) {
-		this.categoria = categoria;
+		this.crimine = crimine;
 	}
 
 
@@ -70,16 +58,15 @@ public class SimulationEvent implements Comparable<SimulationEvent>{
 
 
 
-	public Distretto getDistretto() {
-		return distretto;
+
+	public Event getCrimine() {
+		return crimine;
 	}
 
 
-
-	public void setDistretto(Distretto distretto) {
-		this.distretto = distretto;
+	public void setCrimine(Event crimine) {
+		this.crimine = crimine;
 	}
-
 
 
 	@Override
