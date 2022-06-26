@@ -105,19 +105,14 @@ public class Simulator {
 			if(agente == null) {
 //				System.out.println("non ci sono agenti disponibili!");
 				System.out.println("CRIMINE MAL GESTITO!");
+				
+				// aggiorno dati in uscita
 				this.nMalGestiti++;
 				break;
 			}
 			
 			// calcolo il tempo d'arrivo
 			double tempoSpostamento = this.calcoloSpostamento(agente.getDistretto(), e.getDistretto());
-			
-			// aggiorno i dati in uscita
-			if(tempoSpostamento > 15) {
-				System.out.println("CRIMINE MAL GESTITO!");
-				this.nMalGestiti++;
-				break;
-			}
 			
 			// creo un evento per la gestione del crimine
 			this.queue.add(new SimulationEvent(e.getTime().plusMinutes((long)tempoSpostamento), 
@@ -126,6 +121,13 @@ public class Simulator {
 			break;
 		case INIZIA_GESTIONE:
 			System.out.println("ARRIVATO AGENTE SUL POSTO!");
+			
+			if(e.getTime().isAfter(null)) {
+				// aggiorno i dati in uscita
+				System.out.println("CRIMINE MAL GESTITO!");
+				this.nMalGestiti++;
+				break;
+			}
 			
 			// calcolo l'istante in cui l'agente si libera
 			LocalDateTime istanteFine = this.calcolaFineGestione(e.getTime(), e.getCategoria());
