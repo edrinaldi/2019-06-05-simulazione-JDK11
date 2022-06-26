@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.polito.tdp.crimes.model.Distretto;
 import it.polito.tdp.crimes.model.Event;
 
 
@@ -45,6 +46,35 @@ public class EventsDao {
 					t.printStackTrace();
 					System.out.println(res.getInt("id"));
 				}
+			}
+			
+			conn.close();
+			return list ;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+	}
+	
+	public List<Distretto> getVertici(int anno){
+		String sql = "select district_id as d, avg(geo_lat) as lat, avg(geo_lon) as lng "
+				+ "from events "
+				+ "where year(reported_date)=? "
+				+ "group by district_id";
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, anno);
+			
+			List<Distretto> list = new ArrayList<>() ;
+			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				list.add(new Distretto(res.getString("d"), res.getDouble("lat"), res.getDouble("lng")));
 			}
 			
 			conn.close();

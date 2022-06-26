@@ -7,6 +7,8 @@ package it.polito.tdp.crimes;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.crimes.model.Distretto;
+import it.polito.tdp.crimes.model.DistrettoVicino;
 import it.polito.tdp.crimes.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,7 +27,7 @@ public class FXMLController {
     private URL location;
 
     @FXML // fx:id="boxAnno"
-    private ComboBox<?> boxAnno; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxMese"
     private ComboBox<?> boxMese; // Value injected by FXMLLoader
@@ -47,7 +49,28 @@ public class FXMLController {
 
     @FXML
     void doCreaReteCittadina(ActionEvent event) {
-
+    	// pulisco l'area di testo
+    	this.txtResult.clear();
+    	
+    	// controllo l'anno
+    	Integer anno = this.boxAnno.getValue();
+    	if(anno == null) {
+    		this.txtResult.setText("Errore: devi prima selezionare un anno.");
+    		return;
+    	}
+    	
+    	// creo il grafo
+    	this.model.creaGrafo(anno);
+    	
+    	// stampo il risultato
+    	this.txtResult.setText("Grafo creato!\n\n");
+    	for(Distretto d : this.model.getVertici()) {
+    		this.txtResult.appendText(String.format("VICINI DEL DISTRETTO: %s\n", d.getNome()));
+    		for(DistrettoVicino v : this.model.getAdiacenti(d)) {
+    			this.txtResult.appendText(v.toString() + "\n");
+    		}
+    		this.txtResult.appendText("\n");
+    	}
     }
 
     @FXML
@@ -69,5 +92,11 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	
+    	// riempio la tendina con gli anni
+    	this.boxAnno.getItems().clear();
+    	for(int i=2014;i<=2017; i++) {
+    		this.boxAnno.getItems().add(i);
+    	}
     }
 }
