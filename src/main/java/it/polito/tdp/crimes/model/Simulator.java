@@ -52,6 +52,7 @@ public class Simulator {
 		this.N = N;
 		this.centrale = this.trovaCentrale(this.anno);
 		this.criminiDelGiorno = new ArrayList<>(this.trovaCrimini(this.anno, this.mese, this.giorno));
+		System.out.println("Crimini del giorno: " + this.criminiDelGiorno.size());
 
 		// inizializzo i dati in uscita
 		this.nMalGestiti = 0;
@@ -190,9 +191,12 @@ public class Simulator {
 		return istanteFine;
 	}
 	
+	/*
+	 * trova l'agente libero più vicino al distretto in cui si è verificato l'evento criminoso
+	 */
 	private Agente trovaAgente(Distretto distretto) {
 		Agente piuVicino = null;
-		double distanzaMin = Integer.MAX_VALUE;
+		double distanzaMin = Double.MAX_VALUE;
 		for(Agente a : this.agenti) {
 			if(a.isDisponibile()) {
 				double distanza;
@@ -212,13 +216,13 @@ public class Simulator {
 	}
 
 	private double calcoloSpostamento(Distretto partenza, Distretto arrivo) {
-		double distanza;
+		double distanza;	// km
 		if(!partenza.equals(arrivo)) {
 			distanza = this.grafo.getEdgeWeight(this.grafo.getEdge(partenza, arrivo));
 		}
 		else {
 			distanza = 0;
 		}
-		return distanza/60*60;
+		return distanza/60*60;	// min
 	}
 }
