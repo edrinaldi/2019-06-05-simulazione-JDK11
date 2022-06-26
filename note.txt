@@ -1,0 +1,26 @@
+- chiedo al db il distretto a minore criminalità dell'anno in corso // Distretto distrettoCentrale
+- inizializzo il modello del mondo con tutti gli agenti disponibili in centrale	// List<Agente> agentiDisponibili
+- trovo la lista dei crimini del giorno // List<Event> criminiDelGiorno
+- carico la coda per ogni crimine del giorno
+	- SimulationEvent al tempo del crimine, tipo CRIMINE, nel distretto dell'evento
+- per ogni SimulationEvent di tipo CRIMINE 
+	- trovo l'agente disponibile più vicino	// lo chiedo al modello del mondo
+	- calcolo la distanza che lo separa dal posto	// chiedo al grafo
+	- calcolo il tempo di arrivo	// distanza/60kmh
+	- if(tempo per arrivare > 15min)
+		- incremento il numero di eventi mal gestiti
+	- creo un SimulationEvent al tempo di arrivo, di tipo INIZIA_GESTIONE, nel distretto del crimine
+- per ogni SimulationEvent di tipo INIZIA_GESTIONE
+	- calcolo il tempo di fine a seconda del tipo di crimine
+	// aggiorno il modello del mondo 
+	- l'agente è non disponibile
+	- si trova nel distretto
+- per ogni SimulationEvent di tipo FINISCE_GESTIONE
+	// aggiorno il modello del mondo
+	- l'agente è disponibile
+	
+	select incident_id, district_id, reported_date
+from events
+where day(reported_date)=1
+and month(reported_date)=1
+and year(reported_date)=2015

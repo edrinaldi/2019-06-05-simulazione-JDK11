@@ -17,6 +17,7 @@ import it.polito.tdp.crimes.db.EventsDao;
 public class Model {
 	private Graph<Distretto, DefaultWeightedEdge> grafo;
 	private EventsDao dao;
+	private Simulator sim;
 	
 	public Model() {
 		// inizializzo il dao
@@ -57,7 +58,18 @@ public class Model {
 
 	}
 	
+	public int simula(int anno, int mese, int giorno, int N) {
+		this.sim = new Simulator(this.grafo);
+		this.sim.init(anno, mese, giorno, N);
+		this.sim.run();
+		return this.sim.getNMalGestiti();
+	}
+	
 	public List<Distretto> getVertici() {
 		return new ArrayList<Distretto>(this.grafo.vertexSet());
+	}
+	
+	public boolean isGrafoCreato() {
+		return this.grafo!=null;
 	}
 }

@@ -5,17 +5,17 @@ import java.util.Objects;
 import com.javadocmd.simplelatlng.LatLng;
 
 public class Distretto {
-	private String nome;
+	private int nome;
 	private LatLng centro;
-	public Distretto(String nome, double lat, double lng) {
+	public Distretto(int nome, double lat, double lng) {
 		super();
 		this.nome = nome;
 		this.centro = new LatLng(lat, lng);
 	}
-	public String getNome() {
+	public int getNome() {
 		return nome;
 	}
-	public void setNome(String nome) {
+	public void setNome(int nome) {
 		this.nome = nome;
 	}
 

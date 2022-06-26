@@ -30,10 +30,10 @@ public class FXMLController {
     private ComboBox<Integer> boxAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxMese"
-    private ComboBox<?> boxMese; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxMese; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxGiorno"
-    private ComboBox<?> boxGiorno; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxGiorno; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnCreaReteCittadina"
     private Button btnCreaReteCittadina; // Value injected by FXMLLoader
@@ -75,7 +75,53 @@ public class FXMLController {
 
     @FXML
     void doSimula(ActionEvent event) {
-
+    	// pulisco l'area di testo
+    	this.txtResult.clear();
+    	
+    	// controllo il grafo
+    	if(!this.model.isGrafoCreato()) {
+    		this.txtResult.setText("Errore: devi prima creare il grafo.");
+    		return;
+    	}
+    	
+    	// controllo l'anno
+    	Integer anno = this.boxAnno.getValue();
+    	if(anno == null) {
+    		this.txtResult.setText("Errore: devi prima selezionare un anno.");
+    		return;
+    	}
+    	
+    	// controllo il mese
+    	Integer mese = this.boxMese.getValue();
+    	if(mese == null) {
+    		this.txtResult.setText("Errore: devi prima selezionare un mese.");
+    		return;
+    	}
+    	
+    	// controllo il giorno
+    	Integer giorno = this.boxGiorno.getValue();
+    	if(giorno == null) {
+    		this.txtResult.setText("Errore: devi prima selezionare un giorno.");
+    		return;
+    	}
+    	
+    	// controllo N
+    	int N = 0;
+    	try {
+    		N = Integer.parseInt(this.txtN.getText());
+    	}
+    	catch(NumberFormatException e) { 
+    		e.printStackTrace();
+    		this.txtResult.setText("Errore: devi inserire un valore intero per N.");
+    		return;
+    	}
+    	
+    	
+    	// effettuo la simulazione
+    	int nMalGestiti = this.model.simula(0, 0, 0, 0);
+    	
+    	// stampo il risultato
+    	this.txtResult.setText(String.format("Simulo con %d agenti\nCRIMINI MAL GESTITI: %d", N, nMalGestiti));
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -97,6 +143,18 @@ public class FXMLController {
     	this.boxAnno.getItems().clear();
     	for(int i=2014;i<=2017; i++) {
     		this.boxAnno.getItems().add(i);
+    	}
+    	
+    	// riempio la tendina con i mesi
+    	this.boxMese.getItems().clear();
+    	for(int i=1;i<=12; i++) {
+    		this.boxMese.getItems().add(i);
+    	}
+    	
+    	// riempio la tendina con i giorni
+    	this.boxGiorno.getItems().clear();
+    	for(int i=1;i<=31; i++) {
+    		this.boxGiorno.getItems().add(i);
     	}
     }
 }

@@ -1,26 +1,58 @@
 package it.polito.tdp.crimes.model;
 
+import java.time.LocalDateTime;
+
 public class SimulationEvent implements Comparable<SimulationEvent>{
 	public enum EventType {
-		// TODO
+		CRIMINE,
 		INIZIA_GESTIONE,
-		FINISCE_GESTIONE,
+		FINISCE_GESTIONE
 	}
 	
-	private Integer time;
+	private LocalDateTime time;
 	private EventType type;
-	private int agente;
+	private Agente agente;
 	private Distretto distretto;
+	private String categoria;
 	
 	
-	
-	public Integer getTime() {
+	public SimulationEvent(LocalDateTime time, EventType type, Agente agente, Distretto distretto, String categoria) {
+		super();
+		this.time = time;
+		this.type = type;
+		this.agente = agente;
+		this.distretto = distretto;
+		this.categoria = categoria;
+	}
+
+
+	public String getCategoria() {
+		return categoria;
+	}
+
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+
+
+	public Agente getAgente() {
+		return agente;
+	}
+
+
+	public void setAgente(Agente agente) {
+		this.agente = agente;
+	}
+
+
+	public LocalDateTime getTime() {
 		return time;
 	}
 
 
 
-	public void setTime(Integer time) {
+	public void setTime(LocalDateTime time) {
 		this.time = time;
 	}
 
@@ -38,9 +70,20 @@ public class SimulationEvent implements Comparable<SimulationEvent>{
 
 
 
+	public Distretto getDistretto() {
+		return distretto;
+	}
+
+
+
+	public void setDistretto(Distretto distretto) {
+		this.distretto = distretto;
+	}
+
+
+
 	@Override
 	public int compareTo(SimulationEvent o) {
-		// TODO Auto-generated method stub
 		return this.time.compareTo(o.time);
 	}
 
