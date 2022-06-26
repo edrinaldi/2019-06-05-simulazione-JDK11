@@ -102,23 +102,17 @@ public class Simulator {
 			Agente agente = this.trovaAgente(e.getDistretto());
 			if(agente == null) {
 				System.out.println("non ci sono agenti disponibili!");
-//				this.queue.add(new SimulationEvent(e.getTime(), EventType.CRIMINE, null, e.getDistretto(), 
-//						e.getCategoria()));
+				this.nMalGestiti++;
 				break;
 			}
 			
 			// calcolo il tempo d'arrivo
-			double tempoSpostamento = 0.0;
-			if(!agente.getDistretto().equals(e.getDistretto())) {
-				tempoSpostamento = this.calcoloSpostamento(agente.getDistretto(), e.getDistretto());
-			}
-			else {
-				tempoSpostamento = 0;
-			}
+			double tempoSpostamento = this.calcoloSpostamento(agente.getDistretto(), e.getDistretto());
 			
 			// aggiorno i dati in uscita
 			if(tempoSpostamento > 15) {
 				this.nMalGestiti++;
+				break;
 			}
 			
 			// creo un evento per la gestione del crimine
@@ -201,8 +195,13 @@ public class Simulator {
 		double distanzaMin = Integer.MAX_VALUE;
 		for(Agente a : this.agenti) {
 			if(a.isDisponibile()) {
-				double distanza = LatLngTool.distance(a.getDistretto().getCentro(), distretto.getCentro(), 
-						LengthUnit.KILOMETER);
+				double distanza;
+				if(!a.getDistretto().equals(distretto)) {
+					distanza = this.grafo.getEdgeWeight(this.grafo.getEdge(a.getDistretto(), distretto));
+				}
+				else {
+					distanza = 0;
+				}
 				if(distanza < distanzaMin) {
 					distanzaMin = distanza;
 					piuVicino = a;
@@ -213,7 +212,13 @@ public class Simulator {
 	}
 
 	private double calcoloSpostamento(Distretto partenza, Distretto arrivo) {
-		double distanza = this.grafo.getEdgeWeight(this.grafo.getEdge(partenza, arrivo));
+		double distanza;
+		if(!partenza.equals(arrivo)) {
+			distanza = this.grafo.getEdgeWeight(this.grafo.getEdge(partenza, arrivo));
+		}
+		else {
+			distanza = 0;
+		}
 		return distanza/60*60;
 	}
 }

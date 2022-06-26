@@ -10,9 +10,10 @@
 		- calcolo il tempo di arrivo	// distanza/60kmh
 		- if(tempo per arrivare > 15min)
 			- incremento il numero di eventi mal gestiti
-		- creo un SimulationEvent al tempo di arrivo, di tipo INIZIA_GESTIONE, nel distretto del crimine
+		- else
+			- creo un SimulationEvent al tempo di arrivo, di tipo INIZIA_GESTIONE, nel distretto del crimine
 	- else
-		- aspetto il primo che si libera ...
+		- incremento il numero di eventi mal gestiti
 - per ogni SimulationEvent di tipo INIZIA_GESTIONE
 	- calcolo il tempo di fine a seconda del tipo di crimine
 	// aggiorno il modello del mondo 

@@ -9,7 +9,7 @@ public class TestModel {
 		Distretto dTest = m.getVertici().get(0);
 //		System.out.println(dTest);
 //		System.out.println(m.getAdiacenti(dTest));
-		System.out.println(m.simula(2015, 1, 1, 10));
+		System.out.println(m.simula(2015, 1, 1, 3));
 
 	}
 
